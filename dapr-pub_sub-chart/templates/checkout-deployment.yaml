@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: {{.Values.checkout.name}}
+  name: {{.Values.checkout.name}}
+  # annotations: 
+  #   dapr.io/enabled: {{.Values.dapr.enabled}} 
+  #   dapr.io/app-id: {{.Values.dapr.appId}} 
+  #   dapr.io/app-port: {{.Values.dapr.appPort}}
+spec:
+  replicas: {{.Values.checkout.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{.Values.checkout.name}}
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: {{.Values.checkout.name}}
+    spec:
+      containers:
+      - image: {{.Values.checkout.image.repository}}
+        name: api
+        imagePullPolicy: {{.Values.checkout.image.pullPolicy}}
+        resources: {}
+        ports:
+          - containerPort: {{.Values.checkout.service.port}} 
+status: {}

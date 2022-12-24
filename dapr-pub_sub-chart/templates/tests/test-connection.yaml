@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "dapr-pub_sub-chart.fullname" . }}-test-connection"
+  labels:
+    {{- include "dapr-pub_sub-chart.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "dapr-pub_sub-chart.fullname" . }}:{{ .Values.orderProcessor.service.port }}']
+  restartPolicy: Never

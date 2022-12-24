@@ -1,0 +1,40 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+orderProcessor:
+  name: order-processor
+  replicaCount: 1
+  image:
+    repository: order-processor
+    pullPolicy: Always
+    #  pullPolicy: IfNotPresent
+  service:
+    port: "5001"
+
+checkout:
+  name: checkout
+  replicaCount: 1
+  image:
+    repository: checkout
+    pullPolicy: Always
+  #  pullPolicy: IfNotPresent
+  service:
+    port: "5002"
+
+rabbit:
+  name: rabbitmq-pubsub
+  type: pubsub.rabbitmq
+  host: amqp://mu-rabbit.default.svc.cluster.local:15672
+  consumerID: orders
+  queueName: orders
+
+dapr: 
+  enabled: true
+  appId: orders
+  appPort: 5001
+
+
+
+
+
+  

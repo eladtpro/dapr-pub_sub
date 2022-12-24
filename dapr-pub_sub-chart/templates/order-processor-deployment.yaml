@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: {{.Values.orderProcessor.name}}
+  name: {{.Values.orderProcessor.name}}
+spec:
+  replicas: {{.Values.orderProcessor.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{.Values.orderProcessor.name}}
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: {{.Values.orderProcessor.name}}
+    spec:
+      containers:
+      - image: {{.Values.orderProcessor.image.repository}}
+        name: api
+        imagePullPolicy: {{.Values.orderProcessor.image.pullPolicy}}
+        resources: {}
+        ports:
+          - containerPort: {{.Values.orderProcessor.service.port}} 
+status: {}

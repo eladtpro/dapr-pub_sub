@@ -1,2 +1,2 @@
-include ../../../docker.mk
-include ../../../validate.mk
+include ./docker.mk
+include ./validate.mk
