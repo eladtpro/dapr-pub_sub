@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from cloudevents.http import from_http
 import json
+import os
 
 app = Flask(__name__)
 
@@ -26,5 +27,5 @@ def orders_subscriber():
     return json.dumps({'success': True}), 200, {
         'ContentType': 'application/json'}
 
-
-app.run(port=5001)
+portNumber = os.environ['PORT']
+app.run(port=portNumber)

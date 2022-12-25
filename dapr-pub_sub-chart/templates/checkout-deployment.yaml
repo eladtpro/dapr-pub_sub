@@ -5,10 +5,6 @@ metadata:
   labels:
     app: {{.Values.checkout.name}}
   name: {{.Values.checkout.name}}
-  # annotations: 
-  #   dapr.io/enabled: {{.Values.dapr.enabled}} 
-  #   dapr.io/app-id: {{.Values.dapr.appId}} 
-  #   dapr.io/app-port: {{.Values.dapr.appPort}}
 spec:
   replicas: {{.Values.checkout.replicaCount}}
   selector:
@@ -17,7 +13,10 @@ spec:
   strategy: {}
   template:
     metadata:
-      creationTimestamp: null
+      annotations: 
+        dapr.io/enabled: "{{.Values.checkout.dapr.enabled}}"
+        dapr.io/app-id: "{{.Values.checkout.dapr.appId}}"
+        dapr.io/app-port: "{{.Values.checkout.dapr.appPort}}"
       labels:
         app: {{.Values.checkout.name}}
     spec:
@@ -28,4 +27,6 @@ spec:
         resources: {}
         ports:
           - containerPort: {{.Values.checkout.service.port}} 
+      imagePullSecrets:
+        - name: {{.Values.orderProcessor.image.pullSecret}}
 status: {}

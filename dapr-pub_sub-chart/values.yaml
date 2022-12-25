@@ -2,36 +2,41 @@
 # Declare variables to be passed into your templates.
 
 orderProcessor:
-  name: order-processor
+  name: "order-processor"
   replicaCount: 1
   image:
-    repository: order-processor
+    repository: "acr4aksregistry.azurecr.io/order-processor:latest"
     pullPolicy: Always
+    pullSecret: "acrcred"
     #  pullPolicy: IfNotPresent
+    # tag: "latest"
   service:
-    port: "5001"
+    port: 5001
+  dapr: 
+    enabled: "true"
+    appId: "order-processor"
 
 checkout:
-  name: checkout
+  name: "checkout"
   replicaCount: 1
   image:
-    repository: checkout
+    repository: "acr4aksregistry.azurecr.io/checkout:latest"
     pullPolicy: Always
-  #  pullPolicy: IfNotPresent
+    pullSecret: "acrcred"
+    # pullPolicy: IfNotPresent
+    # tag: "latest"
   service:
-    port: "5002"
+    port: "5001"
+  dapr: 
+    enabled: "true"
+    appId: "checkout"
+    appPort: "5001"
 
 rabbit:
   name: rabbitmq-pubsub
   type: pubsub.rabbitmq
-  host: amqp://mu-rabbit.default.svc.cluster.local:15672
+  host: "amqp://mu-rabbit.default.svc.cluster.local:15672"
   consumerID: orders
-  queueName: orders
-
-dapr: 
-  enabled: true
-  appId: orders
-  appPort: 5001
 
 
 

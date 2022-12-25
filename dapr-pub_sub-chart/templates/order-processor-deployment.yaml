@@ -13,7 +13,9 @@ spec:
   strategy: {}
   template:
     metadata:
-      creationTimestamp: null
+      annotations: 
+        dapr.io/enabled: "{{.Values.orderProcessor.dapr.enabled}}"
+        dapr.io/app-id: "{{.Values.orderProcessor.dapr.appId}}"
       labels:
         app: {{.Values.orderProcessor.name}}
     spec:
@@ -24,4 +26,6 @@ spec:
         resources: {}
         ports:
           - containerPort: {{.Values.orderProcessor.service.port}} 
+      imagePullSecrets:
+        - name: {{.Values.orderProcessor.image.pullSecret}}
 status: {}
