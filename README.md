@@ -2,7 +2,7 @@
 
 ## Steps to run the demo 
 
-### 1. Local Run Dapr in self-hosted mode without Docker (w/o containers)
+#### 1. Local Run Dapr in self-hosted mode without Docker (w/o containers)
 
 ##### Run components: run the following commands in separate terminals
 
@@ -10,10 +10,23 @@
 `redis-server`
 
 ###### 1.2 start dapr subcscsriber service
+`cd dapr-pub_sub/order-processor`
 `dapr run --app-id order-processor --components-path ../components/ --app-port 5001 -- python3 app.py`
 
 ###### 1.3 run dapr publisher service
-`dapr run --app-id checkout --components-path ../components/ -- python3 app.py`
+`cd dapr-pub_sub/checkout`
+`dapr run --app-id checkout --components-path ../components/ --app-port 5002 -- python3 app.py`
+
+###### 1.4 fire checkout event
+http://localhost:5002/checkout?counter=100
+
+
+##### Run in local kubernetes cluster (w/ containers)
+
+###### 1.0 deploy dapr pubsub chart
+`helm -n default upgrade -i dapr-pubsub-release1 dapr-pub_sub-chart --set customResources.enabled=false --debug`
+
+
 
 
 ### 2. Local Installations

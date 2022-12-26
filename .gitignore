@@ -134,4 +134,7 @@ DS_Store
 
 dapr-pub_sub-chart-*.tgz
 
+dapr-test-chart/
+**/dapr-test-chart/
+
 

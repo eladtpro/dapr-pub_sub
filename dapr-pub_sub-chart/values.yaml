@@ -15,6 +15,7 @@ orderProcessor:
   dapr: 
     enabled: "true"
     appId: "order-processor"
+    appPort: "5001"
 
 checkout:
   name: "checkout"
@@ -26,11 +27,11 @@ checkout:
     # pullPolicy: IfNotPresent
     # tag: "latest"
   service:
-    port: "5001"
+    port: 5002
   dapr: 
     enabled: "true"
     appId: "checkout"
-    appPort: "5001"
+    appPort: "5002"
 
 rabbit:
   name: rabbitmq-pubsub

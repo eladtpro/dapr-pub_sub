@@ -16,6 +16,7 @@ spec:
       annotations: 
         dapr.io/enabled: "{{.Values.orderProcessor.dapr.enabled}}"
         dapr.io/app-id: "{{.Values.orderProcessor.dapr.appId}}"
+        dapr.io/app-port: "{{.Values.orderProcessor.dapr.appPort}}"
       labels:
         app: {{.Values.orderProcessor.name}}
     spec:
