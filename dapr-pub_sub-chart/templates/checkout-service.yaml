@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{.Values.checkout.name}}
   labels:
-    run: {{.Values.checkout.name}}
+    app: {{.Values.checkout.name}}
 spec:
   ports:
   - port: {{.Values.checkout.service.port}}

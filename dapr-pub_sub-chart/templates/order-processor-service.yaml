@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{.Values.orderProcessor.name}}
   labels:
-    run: {{.Values.orderProcessor.name}}
+    app: {{.Values.orderProcessor.name}}
 spec:
   ports:
   - port: {{.Values.orderProcessor.service.port}}

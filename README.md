@@ -27,6 +27,9 @@ http://localhost:5002/checkout?counter=100
 `helm -n default upgrade -i dapr-pubsub-release1 dapr-pub_sub-chart --set customResources.enabled=false --debug`
 
 
+kubectl exec -it debug-7dd68f7f96-shpf7 sh
+wget http://checkout:5000/checkout?counter=100
+
 
 
 ### 2. Local Installations
