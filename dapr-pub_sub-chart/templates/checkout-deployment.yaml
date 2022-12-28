@@ -21,12 +21,15 @@ spec:
         app: {{.Values.checkout.name}}
     spec:
       containers:
-      - image: {{.Values.checkout.image.repository}}
-        name: api
+      - name: api
+        image: {{.Values.checkout.image.repository}}
         imagePullPolicy: {{.Values.checkout.image.pullPolicy}}
         resources: {}
         ports:
           - containerPort: {{.Values.checkout.service.port}} 
+        env:
+        - name: PORT
+          value: "{{.Values.checkout.service.port}}"
       imagePullSecrets:
-        - name: {{.Values.orderProcessor.image.pullSecret}}
+        - name: {{.Values.checkout.image.pullSecret}}
 status: {}

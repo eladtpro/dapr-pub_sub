@@ -24,11 +24,14 @@ http://localhost:5002/checkout?counter=100
 ##### Run in local kubernetes cluster (w/ containers)
 
 ###### 1.0 deploy dapr pubsub chart
-`helm -n default upgrade -i dapr-pubsub-release1 dapr-pub_sub-chart --set customResources.enabled=false --debug`
+`helm -n default upgrade -i dapr-pubsub-rancher-release dapr-pub_sub-chart --set customResources.enabled=false --debug`
 
+###### 1.1 set rancher context
+`kubectl config use-context rancher-desktop`
 
-kubectl exec -it debug-7dd68f7f96-shpf7 sh
-wget http://checkout:5000/checkout?counter=100
+###### 1.2 start exex an wget command in debug pod
+`kubectl exec -it debug-7dd68f7f96-shpf7 sh`
+`wget http://checkout:5000/checkout?counter=100`
 
 
 

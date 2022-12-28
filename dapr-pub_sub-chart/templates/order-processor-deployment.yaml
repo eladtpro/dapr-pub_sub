@@ -27,6 +27,9 @@ spec:
         resources: {}
         ports:
           - containerPort: {{.Values.orderProcessor.service.port}} 
+        env:
+        - name: PORT
+          value: "{{.Values.checkout.service.port}}"
       imagePullSecrets:
         - name: {{.Values.orderProcessor.image.pullSecret}}
 status: {}

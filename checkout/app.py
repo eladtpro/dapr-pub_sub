@@ -33,6 +33,7 @@ def fire_orders():
         'ContentType': 'application/json'}
 
 portNumber = getenv('PORT', 5002)
+print('Starting app on port: ' + str(portNumber), flush=True)
 app.run(port=portNumber, debug=True)
 
 

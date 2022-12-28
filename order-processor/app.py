@@ -28,4 +28,5 @@ def orders_subscriber():
         'ContentType': 'application/json'}
 
 portNumber = getenv('PORT', 5001)
+print('Starting app on port: ' + str(portNumber), flush=True)
 app.run(port=portNumber, debug=True)
