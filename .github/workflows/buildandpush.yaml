@@ -19,7 +19,7 @@ jobs:
         - uses: azure/login@v1.4.3
           name: Azure login
           with:
-            client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            client-id: ${{ secrets.ACA_REGISTRY_USERNAME }}
             subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
             tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         - name: Build and push checkout image to ACR (${{ env.AZURE_CONTAINER_REGISTRY }})
