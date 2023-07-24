@@ -89,7 +89,6 @@ virtualenv):
 `--target-port 80 \`
 `--ingress external \`
 `--query properties.configuration.ingress.fqdn`
-`--registry-server ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}`
 `--registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \`
 `--registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }}`
 
