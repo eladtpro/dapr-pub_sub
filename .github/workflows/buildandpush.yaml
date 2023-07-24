@@ -21,7 +21,7 @@ jobs:
             username: ${{ secrets.ACA_REGISTRY_USERNAME }}
             password: ${{ secrets.ACA_REGISTRY_PASSWORD }}
         - run: |
-            docker build ./checkout -t ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/checkout:${{ github.sha }}
+            docker build ./checkout -t ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/checkout:${{ github.sha }} -t ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/checkout:latest
             docker push ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/checkout:${{ github.sha }}
 
         - name: 'Deploy checkout to Azure Container Instances'
@@ -44,7 +44,7 @@ jobs:
             username: ${{ secrets.ACA_REGISTRY_USERNAME }}
             password: ${{ secrets.ACA_REGISTRY_PASSWORD }}
         - run: |
-            docker build ./order-processor -t ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/order-processor:${{ github.sha }}
+            docker build ./order-processor -t ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/order-processor:${{ github.sha }} -t ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/order-processor:latest
             docker push ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/order-processor:${{ github.sha }}
 
         - name: 'Deploy order-processor to Azure Container Instances'
