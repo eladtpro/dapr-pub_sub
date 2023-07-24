@@ -1,0 +1,51 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {.Values.keda.name}
+spec:
+  scaleTargetRef:
+    apiVersion:    {.Values.keda.api-version-of-target-resource}    # Optional. Default: apps/v1
+    kind:          {.Values.keda.kind-of-target-resource}           # Optional. Default: Deployment
+    name:          {.Values.keda.name-of-target-resource}           # Mandatory. Must be in the same namespace as the ScaledObject
+    envSourceContainerName: {.Values.keda.container-name}           # Optional. Default: .spec.template.spec.containers[0]
+  pollingInterval:  30                                              # Optional. Default: 30 seconds
+  cooldownPeriod:   300                                             # Optional. Default: 300 seconds
+  idleReplicaCount: 0                                               # Optional. Default: ignored, must be less than minReplicaCount 
+  minReplicaCount:  1                                               # Optional. Default: 0
+  maxReplicaCount:  100                                             # Optional. Default: 100
+  fallback:                                          # Optional. Section to specify fallback options
+    failureThreshold: 3                              # Mandatory if fallback section is included
+    replicas: 6                                      # Mandatory if fallback section is included
+  advanced:                                          # Optional. Section to specify advanced options
+    restoreToOriginalReplicaCount: false             # Optional. Default: false
+    horizontalPodAutoscalerConfig:                   # Optional. Section to specify HPA related options
+      name: {.Values.keda.name-of-hpa-resource}                   # Optional. Default: keda-hpa-{scaled-object-name}
+      behavior:                                      # Optional. Use to modify HPA's scaling behavior
+        scaleDown:
+          stabilizationWindowSeconds: 300
+          policies:
+          - type: Percent
+            value: 100
+            periodSeconds: 15
+  triggers:
+  # {list of triggers to activate scaling of the target resource}
+- type: azure-eventhub
+  metadata:
+    connectionFromEnv: EVENTHUB_CONNECTIONSTRING_ENV_NAME
+    storageConnectionFromEnv: STORAGE_CONNECTIONSTRING_ENV_NAME
+    consumerGroup: $Default
+    unprocessedEventThreshold: '64'
+    activationUnprocessedEventThreshold: '10'
+    blobContainer: 'name_of_container'
+    # Optional (Default: AzurePublicCloud)
+    cloud: Private
+    # Required when cloud = Private
+    endpointSuffix: servicebus.airgap.example
+    # Required when cloud = Private
+    storageEndpointSuffix: airgap.example
+    # Required when cloud = Private.
+    activeDirectoryEndpoint: https://login.airgap.example/
+    # Required when cloud = Private.
+    eventHubResourceURL: https://eventhubs.airgap.example/
+    # Required when using pod identity authentication with blob storage
+    storageAccountName: 'name_of_account'

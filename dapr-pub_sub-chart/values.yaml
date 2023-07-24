@@ -1,6 +1,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+deploymentType: "rancher"
+# deploymentType: "aks"
+
 orderProcessor:
   name: "order-processor"
   replicaCount: 1
@@ -39,8 +42,12 @@ rabbit:
   host: "amqp://mu-rabbit.default.svc.cluster.local:15672"
   consumerID: orders
 
+keda:
+  name: "keda-scaler"
+  api-version-of-target-resource: "Deployment"
+  name-of-target-resource: "order-processor"
+  container-name: "api"
+  name-of-hpa-resource: "keda-hpa-order-processor"
 
-
-
-
-  
+serviceBus:
+  connectionString: "Endpoint=sb://sbus-dapr-demo.servicebus.windows.net/;SharedAccessKeyName=DaprAccessKey;SharedAccessKey=q4TCvvXD2SRX8dsVvumQHuGcq5btTID6W64s9jQhGlI="

@@ -10,4 +10,8 @@ spec:
     protocol: TCP
   selector:
     app: {{.Values.orderProcessor.name}}
+  {{ if eq .Values.deploymentType "rancher" }}
+  type: NodePort
+  {{ else }}
   type: LoadBalancer
+  {{ end }} 

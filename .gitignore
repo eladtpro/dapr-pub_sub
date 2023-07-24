@@ -137,4 +137,6 @@ dapr-pub_sub-chart-*.tgz
 dapr-test-chart/
 **/dapr-test-chart/
 
+**/values.yaml
+
 

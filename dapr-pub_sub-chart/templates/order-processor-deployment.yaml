@@ -13,7 +13,7 @@ spec:
   strategy: {}
   template:
     metadata:
-      annotations: 
+      annotations:
         dapr.io/enabled: "{{.Values.orderProcessor.dapr.enabled}}"
         dapr.io/app-id: "{{.Values.orderProcessor.dapr.appId}}"
         dapr.io/app-port: "{{.Values.orderProcessor.dapr.appPort}}"
@@ -27,9 +27,23 @@ spec:
         resources: {}
         ports:
           - containerPort: {{.Values.orderProcessor.service.port}} 
+        # {{- if eq .Values.deploymentType "aks" }}
+        # readinessProbe:
+        #   tcpSocket:
+        #     port: {{.Values.orderProcessor.service.port}}
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10
+        # livenessProbe:
+        #   tcpSocket:
+        #     port: {{.Values.orderProcessor.service.port}}
+        #   initialDelaySeconds: 15
+        #   periodSeconds: 20
+        # {{- end }}
         env:
         - name: PORT
           value: "{{.Values.checkout.service.port}}"
+      {{- if eq .Values.deploymentType "rancher" }}
       imagePullSecrets:
         - name: {{.Values.orderProcessor.image.pullSecret}}
-status: {}
+      {{- end }}
+

@@ -29,6 +29,9 @@ http://localhost:5002/checkout?counter=100
 ###### 1.1 set rancher context
 `kubectl config use-context rancher-desktop`
 
+`kubectl config use-context cluster-dapr`
+
+
 ###### 1.2 start exex an wget command in debug pod
 `kubectl exec -it debug-7dd68f7f96-shpf7 sh`
 `wget http://checkout:5000/checkout?counter=100`

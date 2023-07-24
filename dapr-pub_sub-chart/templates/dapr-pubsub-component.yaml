@@ -1,15 +1,16 @@
+{{- if eq .Values.deploymentType "rancher" }}
 apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
-  name: {{.Values.rabbit.name}}
+  name: orderpubsub
 spec:
-  type: {{.Values.rabbit.type}}
+  type: pubsub.rabbitmq
   version: v1
   metadata:
   - name: host
-    value: {{.Values.rabbit.host}}
+    value: amqp://mu-rabbit.default.svc.cluster.local:15672
   - name: consumerID
-    value: {{.Values.rabbit.consumerID}}
+    value: orders
   - name: durable
     value: false
   - name: deletedWhenUnused
@@ -36,3 +37,4 @@ spec:
     value: 10485760
   - name: exchangeKind
     value: fanout
+{{- end }}
