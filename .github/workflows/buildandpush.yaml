@@ -16,12 +16,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         - uses: actions/checkout@v3
-        - uses: azure/login@v1.4.3
-          name: Azure login
+        # - uses: azure/login@v1.4.3
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
           with:
-            client-id: ${{ secrets.ACA_REGISTRY_USERNAME }}
-            subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-            tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            creds: ${{ secrets.ACA_AZURE_CREDENTIALS }}
         - name: Build and push checkout image to ACR (${{ env.AZURE_CONTAINER_REGISTRY }})
           run: az acr build --image ${{ env.CONTAINER_NAME }}:latest --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./checkout/Dockerfile ./checkout/
         - name: Build and push order-processor image to ACR (${{ env.AZURE_CONTAINER_REGISTRY }})
