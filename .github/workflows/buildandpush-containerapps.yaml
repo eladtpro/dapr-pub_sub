@@ -4,7 +4,6 @@ name: Build&Push images to Azure Container Apps (azure-container-apps)
 env:
   ACR_RESOURCE_GROUP: azure-container-apps
   AZURE_CONTAINER_REGISTRY: regcontainerapps
-  CONTAINER_NAME: checkout
   DEPLOYMENT_MANIFEST_PATH: |
       ./makefile
 
@@ -22,10 +21,45 @@ jobs:
           with:
             creds: ${{ secrets.ACA_AZURE_CREDENTIALS }}
         - name: Build and push checkout image to ACR (${{ env.AZURE_CONTAINER_REGISTRY }})
-          run: az acr build --image ${{ env.CONTAINER_NAME }}:latest --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./checkout/Dockerfile ./checkout/
+          run: az acr build --image checkout:latest --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./checkout/Dockerfile ./checkout/
         - name: Build and push order-processor image to ACR (${{ env.AZURE_CONTAINER_REGISTRY }})
           run: az acr build --image order-processor:latest --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./order-processor/Dockerfile ./order-processor/
 
+
+        - name: deploy checkout container apps using bash
+          run: |
+
+            az containerapp up \
+            --name checkout \
+            --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
+            --location westeurope \
+            --environment 'env-container-apps-environment' \
+            --image ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/checkout:latest \
+            --target-port 80 \
+            --ingress external \
+            --query properties.configuration.ingress.fqdn
+            --registry-server ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}
+            --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
+            --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }}
+
+
+        - name: deploy order processor container apps using bash
+          run: |
+
+            az containerapp up \
+            --name order-processor \
+            --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
+            --location westeurope \
+            --environment 'env-container-apps-environment' \
+            --image ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/order-processor:latest \
+            --target-port 80 \
+            --ingress external \
+            --query properties.configuration.ingress.fqdn
+            --registry-server ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}
+            --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
+            --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }}
+
+    
 
     # build-and-deploy:
     #     runs-on: ubuntu-latest

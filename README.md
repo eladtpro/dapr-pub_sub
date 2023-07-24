@@ -78,6 +78,22 @@ virtualenv):
 `cd pub_sub/python/sdk/order-processor pip3 install -r requirements.txt`
 
 
+### 3. Azure Container Apps
+
+`az containerapp up \`
+`--name checkout \`
+`--resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \`
+`--location westeurope \`
+`--environment 'env-container-apps-environment' \`
+`--image ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/checkout:latest \`
+`--target-port 80 \`
+`--ingress external \`
+`--query properties.configuration.ingress.fqdn`
+`--registry-server ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}`
+`--registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \`
+`--registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }}`
+
+
 ### 3. AKS Dapr extensions
 
 > ###### 3.1. Install Dapr on AKS
