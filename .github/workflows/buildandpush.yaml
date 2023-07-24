@@ -1,5 +1,5 @@
 on: [push]
-name: Build_and_Push_ACA_Images_Workflow
+name: Build&Push images to Azure Container Apps (azure-container-apps)
 
 env:
   ACR_RESOURCE_GROUP: azure-container-apps

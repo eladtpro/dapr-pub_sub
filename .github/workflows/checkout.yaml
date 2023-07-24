@@ -1,4 +1,4 @@
-name: checkout
+name: Build&Push images to Azure Kubernetes Service (azure-kubernetes-service)
 "on":
     push:
         branches:
