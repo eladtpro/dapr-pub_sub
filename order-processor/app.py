@@ -29,4 +29,4 @@ def orders_subscriber():
 
 portNumber = getenv('PORT', 5001)
 print('Starting app on port: ' + str(portNumber), flush=True)
-app.run(port=portNumber, debug=True)
+app.run(port=int(portNumber), debug=True)

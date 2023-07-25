@@ -34,7 +34,7 @@ def fire_orders():
 
 portNumber = getenv('PORT', 5002)
 print('Starting app on port: ' + str(portNumber), flush=True)
-app.run(port=portNumber, debug=True)
+app.run(port=int(portNumber), debug=True)
 
 
 
