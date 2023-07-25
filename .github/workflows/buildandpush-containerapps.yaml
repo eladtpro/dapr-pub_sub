@@ -25,91 +25,25 @@ jobs:
         - name: Build and push order-processor image to ACR (${{ env.AZURE_CONTAINER_REGISTRY }})
           run: az acr build --image order-processor:latest --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./order-processor/Dockerfile ./order-processor/
 
-        - name: deploy checkout container apps using bash
+  deployContainerApps:
+    runs-on: ubuntu-latest
+    strategy: 
+      matrix:
+        app: [checkout, order-processor]
+    steps:
+        - name: Deploy container app
           run: |
             az containerapp up \
-            --name checkout \
-            --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
-            --location westeurope \
-            --environment 'env-container-apps-environment' \
-            --image ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/checkout:latest \
-            --target-port 80 \
-            --ingress external \
-            --query properties.configuration.ingress.fqdn \
-            --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
-            --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }} \
-            --env-vars 'PORT=80'
-
-        - name: deploy order processor container apps using bash
-          run: |
-            az containerapp up \
-            --name order-processor \
-            --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
-            --location westeurope \
-            --environment 'env-container-apps-environment' \
-            --image ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/order-processor:latest \
-            --target-port 80 \
-            --ingress external \
-            --query properties.configuration.ingress.fqdn \
-            --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
-            --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }} \
-            --env-vars 'PORT=80'
-
-    
-
-    # build-and-deploy:
-    #     runs-on: ubuntu-latest
-    #     steps:
-    #     # checkout the repo
-    #     - name: 'Checkout GitHub Action'
-    #       uses: actions/checkout@main
-          
-    #     - name: 'Login via Azure CLI'
-    #       uses: azure/login@v1
-    #       with:
-    #         creds: ${{ secrets.ACA_AZURE_CREDENTIALS }}
-        
-    #     - name: 'Build and push checkout image'
-    #       uses: azure/docker-login@v1
-    #       with:
-    #         login-server: ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}
-    #         username: ${{ secrets.ACA_REGISTRY_USERNAME }}
-    #         password: ${{ secrets.ACA_REGISTRY_PASSWORD }}
-    #     - run: |
-    #         docker build ./checkout -t ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/checkout:${{ github.sha }} -t ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/checkout:latest
-    #         docker push ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/checkout:${{ github.sha }}
-
-    #     - name: 'Deploy checkout to Azure Container Instances'
-    #       uses: 'azure/aci-deploy@v1'
-    #       with:
-    #         resource-group: ${{ secrets.ACA_RESOURCE_GROUP }}
-    #         dns-name-label: ${{ secrets.ACA_RESOURCE_GROUP }}${{ github.run_number }}
-    #         image: ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/checkout:${{ github.sha }}
-    #         registry-login-server: ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}
-    #         registry-username: ${{ secrets.ACA_REGISTRY_USERNAME }}
-    #         registry-password: ${{ secrets.ACA_REGISTRY_PASSWORD }}
-    #         name: checkout
-    #         location: 'west europe'
-
-
-    #     - name: 'Build and push order-processor image'
-    #       uses: azure/docker-login@v1
-    #       with:
-    #         login-server: ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}
-    #         username: ${{ secrets.ACA_REGISTRY_USERNAME }}
-    #         password: ${{ secrets.ACA_REGISTRY_PASSWORD }}
-    #     - run: |
-    #         docker build ./order-processor -t ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/order-processor:${{ github.sha }} -t ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/order-processor:latest
-    #         docker push ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/order-processor:${{ github.sha }}
-
-    #     - name: 'Deploy order-processor to Azure Container Instances'
-    #       uses: 'azure/aci-deploy@v1'
-    #       with:
-    #         resource-group: ${{ secrets.ACA_RESOURCE_GROUP }}
-    #         dns-name-label: ${{ secrets.ACA_RESOURCE_GROUP }}${{ github.run_number }}
-    #         image: ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/order-processor:${{ github.sha }}
-    #         registry-login-server: ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}
-    #         registry-username: ${{ secrets.ACA_REGISTRY_USERNAME }}
-    #         registry-password: ${{ secrets.ACA_REGISTRY_PASSWORD }}
-    #         name: order-processor
-    #         location: 'west europe'
+              --name ${{ matrix.app }} \
+              --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
+              --location westeurope \
+              --environment 'env-container-apps-environment' \
+              --image ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/${{ matrix.app }}:latest \
+              --target-port 80 \
+              --ingress external \
+              --query properties.configuration.ingress.fqdn \
+              --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
+              --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }} \
+              --health-check-path '/health' \
+              --env-vars 'PORT=80'
+              

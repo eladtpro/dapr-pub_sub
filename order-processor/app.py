@@ -8,6 +8,12 @@ app = Flask(__name__)
 
 # dapr run --app-id order-processor --components-path ../components/ --app-port 5001 -- python3 app.py
 # Register Dapr pub/sub subscriptions
+
+@app.route('/')
+@app.route('/health')
+def health_check():
+    return 'OK', 204
+
 @app.route('/dapr/subscribe', methods=['GET'])
 def subscribe():
     subscriptions = [{

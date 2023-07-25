@@ -10,6 +10,11 @@ app = Flask(__name__)
 # dapr run --app-id checkout --components-path ../components/ -- python3 app.py
 logging.basicConfig(level=logging.INFO)
 
+@app.route('/')
+@app.route('/health')
+def health_check():
+    return 'OK', 204
+
 # Dapr subscription in /dapr/subscribe sets up this route
 @app.route('/checkout', methods=['GET'])
 def fire_orders():
