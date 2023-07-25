@@ -6,7 +6,7 @@ COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 5000
-ENV PORT=5000
+EXPOSE 80
+ENV PORT=80
 
-CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0", "--port=${PORT}"]
+CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0"]
