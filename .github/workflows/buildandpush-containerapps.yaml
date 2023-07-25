@@ -36,7 +36,7 @@ jobs:
             --image ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/checkout:latest \
             --target-port 80 \
             --ingress external \
-            --query properties.configuration.ingress.fqdn
+            --query properties.configuration.ingress.fqdn \
             --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
             --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }}
 
@@ -50,24 +50,24 @@ jobs:
             --image ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/checkout:latest \
             --target-port 80 \
             --ingress external \
-            --query properties.configuration.ingress.fqdn
+            --query properties.configuration.ingress.fqdn \
             --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
             --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }}
 
 
-        # - name: deploy order processor container apps using bash
-        #   run: |
-        #     az containerapp up \
-        #     --name order-processor \
-        #     --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
-        #     --location westeurope \
-        #     --environment 'env-container-apps-environment' \
-        #     --image ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/order-processor:latest \
-        #     --target-port 80 \
-        #     --ingress external \
-        #     --query properties.configuration.ingress.fqdn
-        #     --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
-        #     --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }}
+        - name: deploy order processor container apps using bash
+          run: |
+            az containerapp up \
+            --name order-processor \
+            --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
+            --location westeurope \
+            --environment 'env-container-apps-environment' \
+            --image ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/order-processor:latest \
+            --target-port 80 \
+            --ingress external \
+            --query properties.configuration.ingress.fqdn \
+            --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
+            --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }}
 
     
 
