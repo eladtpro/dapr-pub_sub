@@ -11,7 +11,7 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 
 @app.route('/')
-@app.route('/health')
+@app.route('/liveness')
 def health_check():
     return 'OK', 204
 

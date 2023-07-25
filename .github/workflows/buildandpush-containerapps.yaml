@@ -44,6 +44,4 @@ jobs:
               --query properties.configuration.ingress.fqdn \
               --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
               --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }} \
-              --health-check-path '/health' \
               --env-vars 'PORT=80'
-              

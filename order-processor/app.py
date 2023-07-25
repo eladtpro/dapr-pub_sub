@@ -10,7 +10,7 @@ app = Flask(__name__)
 # Register Dapr pub/sub subscriptions
 
 @app.route('/')
-@app.route('/health')
+@app.route('/liveness')
 def health_check():
     return 'OK', 204
 
