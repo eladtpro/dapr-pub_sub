@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         - uses: actions/checkout@v3
-        # - uses: azure/login@v1.4.3
         - name: 'Login via Azure CLI'
           uses: azure/login@v1
           with:
@@ -31,6 +30,11 @@ jobs:
       matrix:
         app: [checkout, order-processor]
     steps:
+        - uses: actions/checkout@v3
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.ACA_AZURE_CREDENTIALS }}
         - name: Deploy container app
           run: |
             az containerapp up \
