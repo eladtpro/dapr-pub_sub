@@ -11,8 +11,16 @@ app = Flask(__name__)
 
 @app.route('/')
 @app.route('/liveness')
-def health_check():
-    return 'OK', 204
+def liveness():
+    return 'OK', 200
+
+@app.route('/readiness')
+def readiness():
+    return 'OK', 200
+
+@app.route('/startup')
+def startup():
+    return 'OK', 200
 
 @app.route('/dapr/subscribe', methods=['GET'])
 def subscribe():

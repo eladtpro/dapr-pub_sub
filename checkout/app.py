@@ -12,8 +12,16 @@ logging.basicConfig(level=logging.INFO)
 
 @app.route('/')
 @app.route('/liveness')
-def health_check():
-    return 'OK', 204
+def liveness():
+    return 'OK', 200
+
+@app.route('/readiness')
+def readiness():
+    return 'OK', 200
+
+@app.route('/startup')
+def startup():
+    return 'OK', 200
 
 # Dapr subscription in /dapr/subscribe sets up this route
 @app.route('/checkout', methods=['GET'])
