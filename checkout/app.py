@@ -12,15 +12,11 @@ logging.basicConfig(level=logging.INFO)
 
 @app.route('/')
 @app.route('/liveness')
-def liveness():
-    return 'OK', 200
-
 @app.route('/readiness')
-def readiness():
-    return 'OK', 200
-
+@app.route('/health')
+@app.route('/ready')
 @app.route('/startup')
-def startup():
+def check():
     return 'OK', 200
 
 # Dapr subscription in /dapr/subscribe sets up this route
@@ -46,8 +42,8 @@ def fire_orders():
         'ContentType': 'application/json'}
 
 portNumber = getenv('PORT', 5002)
-print('Starting app on port: ' + str(portNumber), flush=True)
 if __name__ == "__main__":
+    print('Starting app on port: ' + str(portNumber), flush=True)
     app.run(port=int(portNumber), debug=True)
 
 
