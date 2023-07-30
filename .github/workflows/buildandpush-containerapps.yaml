@@ -32,13 +32,16 @@ jobs:
           uses: azure/login@v1
           with:
             creds: ${{ secrets.ACA_AZURE_CREDENTIALS }}
-        - name: Update container app
+        - name: Create checkout container app
           run: |
             az containerapp create \
               --name checkout \
               --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
               --min-replicas 1 \
               --max-replicas 3 \
+
+        - name: Create order-processor container app
+          run: |
             az containerapp create \
               --name order-processor \
               --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
