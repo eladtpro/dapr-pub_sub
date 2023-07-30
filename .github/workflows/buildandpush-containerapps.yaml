@@ -34,7 +34,7 @@ jobs:
           run: |
             az containerapp create \
               --name checkout \
-              --resource-group ${{ vars.vars.ACA_RESOURCE_GROUP }} \
+              --resource-group ${{ vars.ACA_RESOURCE_GROUP }} \
               --environment ${{ vars.ACA_CONTAINER_APP_ENVIRONMENT }} \
               --min-replicas 1 \
               --max-replicas 3 \
@@ -43,7 +43,7 @@ jobs:
           run: |
             az containerapp create \
               --name order-processor \
-              --resource-group ${{ vars.vars.ACA_RESOURCE_GROUP }} \
+              --resource-group ${{ vars.ACA_RESOURCE_GROUP }} \
               --environment ${{ vars.ACA_CONTAINER_APP_ENVIRONMENT }} \
               --min-replicas 0 \
               --max-replicas 3 \
@@ -71,7 +71,7 @@ jobs:
           run: |
             az containerapp up \
               --name ${{ matrix.app }} \
-              --resource-group ${{ vars.vars.ACA_RESOURCE_GROUP }} \
+              --resource-group ${{ vars.ACA_RESOURCE_GROUP }} \
               --location westeurope \
               --environment ${{vars.ACA_CONTAINER_APP_ENVIRONMENT}} \
               --image ${{ vars.ACA_REGISTRY_LOGIN_SERVER }}/${{ matrix.app }}:latest \
