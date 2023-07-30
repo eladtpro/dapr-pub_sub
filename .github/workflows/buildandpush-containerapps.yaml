@@ -32,34 +32,16 @@ jobs:
           uses: azure/login@v1
           with:
             creds: ${{ secrets.ACA_AZURE_CREDENTIALS }}
-        - name: Create container app
+        - name: Update container app
           run: |
             az containerapp update \
               --name checkout \
               --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
-              --location westeurope \
-              --environment 'env-container-apps-environment' \
-              --image ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/checkout:latest \
-              --target-port 80 \
-              --ingress external \
-              --query properties.configuration.ingress.fqdn \
-              --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
-              --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }} \
-              --env-vars 'PORT=80'
               --min-replicas 1 \
               --max-replicas 3 \
             az containerapp update \
               --name order-processor \
               --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
-              --location westeurope \
-              --environment 'env-container-apps-environment' \
-              --image ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/order-processor:latest \
-              --target-port 80 \
-              --ingress external \
-              --query properties.configuration.ingress.fqdn \
-              --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
-              --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }} \
-              --env-vars 'PORT=80'
               --min-replicas 0 \
               --max-replicas 3 \
               --secrets service-bus-connection-string=${{ secrets.ACA_SERVICE_BUS_CONNECTION_STRING }} \
