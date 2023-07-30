@@ -24,6 +24,53 @@ jobs:
         - name: Build and push order-processor image to ACR (${{ env.AZURE_CONTAINER_REGISTRY }})
           run: az acr build --image order-processor:latest --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./order-processor/Dockerfile ./order-processor/
 
+  createScaleableContainerApps:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v3
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.ACA_AZURE_CREDENTIALS }}
+        - name: Create container app
+          run: |
+            az containerapp update \
+              --name checkout \
+              --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
+              --location westeurope \
+              --environment 'env-container-apps-environment' \
+              --image ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/checkout:latest \
+              --target-port 80 \
+              --ingress external \
+              --query properties.configuration.ingress.fqdn \
+              --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
+              --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }} \
+              --env-vars 'PORT=80'
+              --min-replicas 1 \
+              --max-replicas 3 \
+            az containerapp update \
+              --name order-processor \
+              --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
+              --location westeurope \
+              --environment 'env-container-apps-environment' \
+              --image ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/order-processor:latest \
+              --target-port 80 \
+              --ingress external \
+              --query properties.configuration.ingress.fqdn \
+              --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
+              --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }} \
+              --env-vars 'PORT=80'
+              --min-replicas 0 \
+              --max-replicas 3 \
+              --secrets service-bus-connection-string=${{ secrets.ACA_SERVICE_BUS_CONNECTION_STRING }} \
+              --scale-rule-name order-processor-service-bus-queue-length \
+              --scale-rule-type azure-servicebus \
+              --scale-rule-metadata 
+                "queueName=orders" \
+                "namespace=sb-orderpubsub" \
+                "messageCount=5" \
+              --scale-rule-auth connection=service-bus-connection-string \
+
   deployContainerApps:
     runs-on: ubuntu-latest
     strategy: 
@@ -48,4 +95,4 @@ jobs:
               --query properties.configuration.ingress.fqdn \
               --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
               --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }} \
-              --env-vars 'PORT=80'
+              --env-vars 'PORT=80'              
