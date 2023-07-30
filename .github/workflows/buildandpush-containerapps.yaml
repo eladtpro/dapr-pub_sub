@@ -2,8 +2,6 @@ on: [push]
 name: Build&Push images to Azure Container Apps (azure-container-apps)
 
 env:
-  ACR_RESOURCE_GROUP: azure-container-apps
-  AZURE_CONTAINER_REGISTRY: regcontainerapps
   DEPLOYMENT_MANIFEST_PATH: |
       ./makefile
 
@@ -19,10 +17,10 @@ jobs:
           uses: azure/login@v1
           with:
             creds: ${{ secrets.ACA_AZURE_CREDENTIALS }}
-        - name: Build and push checkout image to ACR (${{ env.AZURE_CONTAINER_REGISTRY }})
-          run: az acr build --image checkout:latest --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./checkout/Dockerfile ./checkout/
-        - name: Build and push order-processor image to ACR (${{ env.AZURE_CONTAINER_REGISTRY }})
-          run: az acr build --image order-processor:latest --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./order-processor/Dockerfile ./order-processor/
+        - name: Build and push checkout image to ACR (${{ vars.ACA_CONTAINER_REGISTRY }})
+          run: az acr build --image checkout:latest --registry ${{ vars.ACA_CONTAINER_REGISTRY }} -g ${{ vars.ACA_RESOURCE_GROUP }} -f ./checkout/Dockerfile ./checkout/
+        - name: Build and push order-processor image to ACR (${{ vars.ACA_CONTAINER_REGISTRY }})
+          run: az acr build --image order-processor:latest --registry ${{ vars.ACA_CONTAINER_REGISTRY }} -g ${{ vars.ACA_RESOURCE_GROUP }} -f ./order-processor/Dockerfile ./order-processor/
 
   createScaleableContainerApps:
     runs-on: ubuntu-latest
@@ -36,7 +34,8 @@ jobs:
           run: |
             az containerapp create \
               --name checkout \
-              --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
+              --resource-group ${{ vars.vars.ACA_RESOURCE_GROUP }} \
+              --environment ${{ vars.ACA_CONTAINER_APP_ENVIRONMENT }} \
               --min-replicas 1 \
               --max-replicas 3 \
 
@@ -44,7 +43,8 @@ jobs:
           run: |
             az containerapp create \
               --name order-processor \
-              --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
+              --resource-group ${{ vars.vars.ACA_RESOURCE_GROUP }} \
+              --environment ${{ vars.ACA_CONTAINER_APP_ENVIRONMENT }} \
               --min-replicas 0 \
               --max-replicas 3 \
               --secrets service-bus-connection-string=${{ secrets.ACA_SERVICE_BUS_CONNECTION_STRING }} \
@@ -71,10 +71,10 @@ jobs:
           run: |
             az containerapp up \
               --name ${{ matrix.app }} \
-              --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
+              --resource-group ${{ vars.vars.ACA_RESOURCE_GROUP }} \
               --location westeurope \
-              --environment 'env-container-apps-environment' \
-              --image ${{ secrets.ACA_REGISTRY_LOGIN_SERVER }}/${{ matrix.app }}:latest \
+              --environment ${{vars.ACA_CONTAINER_APP_ENVIRONMENT}} \
+              --image ${{ vars.ACA_REGISTRY_LOGIN_SERVER }}/${{ matrix.app }}:latest \
               --target-port 80 \
               --ingress external \
               --query properties.configuration.ingress.fqdn \
