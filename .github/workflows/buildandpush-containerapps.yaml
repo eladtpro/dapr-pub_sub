@@ -34,12 +34,12 @@ jobs:
             creds: ${{ secrets.ACA_AZURE_CREDENTIALS }}
         - name: Update container app
           run: |
-            az containerapp update \
+            az containerapp create \
               --name checkout \
               --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
               --min-replicas 1 \
               --max-replicas 3 \
-            az containerapp update \
+            az containerapp create \
               --name order-processor \
               --resource-group ${{ secrets.ACA_RESOURCE_GROUP }} \
               --min-replicas 0 \
