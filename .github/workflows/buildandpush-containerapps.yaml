@@ -6,7 +6,56 @@ env:
       ./makefile
 
 jobs:
+  buildEnvironment:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v3
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.ACA_AZURE_CREDENTIALS }}
+        - name: Check if resource group exists
+          id: check_resource_group
+          run: |
+            echo exists=$(az group exists --name ${{ env.ACA_RESOURCE_GROUP }})
+        - name: Create resource group
+          if: steps.check_resource_group.outputs.exists != 'true'
+          run: |
+            az group create \
+              --name ${{ vars.ACA_RESOURCE_GROUP }} \
+              --location ${{ vars.ACA_LOCATION }} 
+        - name: Check if container registry exists
+          id: check_container_registry
+          run: |
+            echo exists=$(az acr check-name --name ${{ vars.ACA_CONTAINER_REGISTRY }} --query "nameAvailable")
+        - name: Create container registry
+          if: steps.check_container_registry.outputs.exists == 'true'
+          run: |
+            az acr create \
+              --name ${{ vars.ACA_CONTAINER_REGISTRY }} \
+              --resource-group ${{ vars.ACA_RESOURCE_GROUP }} \
+              --sku Basic \
+              --admin-enabled true
+        - name: Check if container app environment exists
+          id: check_container_app_environment
+          run: |
+            echo exists=$(az containerapp environment show --name ${{ vars.ACA_CONTAINER_APP_ENVIRONMENT }} --resource-group ${{ vars.ACA_RESOURCE_GROUP }} --query "name")
+        - name: Create container app environment
+          run: |
+            az containerapp environment create \
+              --name ${{ vars.ACA_CONTAINER_APP_ENVIRONMENT }} \
+              --resource-group ${{ vars.ACA_RESOURCE_GROUP }} \
+              --location ${{ vars.ACA_LOCATION }} \
+              --registry-name ${{ vars.ACA_CONTAINER_REGISTRY }} \
+              --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
+              --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }} \
+              --registry-sku Basic \
+              --registry-admin-enabled true \
+              --query "name"
+              
+              
   buildImage:
+    needs: buildEnvironment
     permissions:
         contents: read
         id-token: write
@@ -39,6 +88,9 @@ jobs:
               --environment ${{ vars.ACA_CONTAINER_APP_ENVIRONMENT }} \
               --min-replicas 1 \
               --max-replicas 3 \
+              --enable-dapr \
+              --dapr-app-id checkout \
+              --dapr-app-protocol grpc \
 
         - name: Create order-processor container app
           run: |
@@ -56,6 +108,9 @@ jobs:
                 "namespace=sb-orderpubsub" \
                 "messageCount=5" \
               --scale-rule-auth connection=service-bus-connection-string \
+              --enable-dapr \
+              --dapr-app-id checkout \
+              --dapr-app-protocol grpc \
 
   deployContainerApps:
     needs: createScaleableContainerApps
@@ -74,7 +129,7 @@ jobs:
             az containerapp up \
               --name ${{ matrix.app }} \
               --resource-group ${{ vars.ACA_RESOURCE_GROUP }} \
-              --location westeurope \
+              --location ${{ vars.ACA_LOCATION }} \
               --environment ${{vars.ACA_CONTAINER_APP_ENVIRONMENT}} \
               --image ${{ vars.ACA_REGISTRY_LOGIN_SERVER }}/${{ matrix.app }}:latest \
               --target-port 80 \
