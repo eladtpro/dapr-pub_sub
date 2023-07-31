@@ -42,17 +42,11 @@ jobs:
             echo exists=$(az containerapp environment show --name ${{ vars.ACA_CONTAINER_APP_ENVIRONMENT }} --resource-group ${{ vars.ACA_RESOURCE_GROUP }} --query "name")
         - name: Create container app environment
           run: |
-            az containerapp environment create \
+          if: steps.check_container_app_environment.outputs.exists != 'true'
+            az containerapp env create \
               --name ${{ vars.ACA_CONTAINER_APP_ENVIRONMENT }} \
               --resource-group ${{ vars.ACA_RESOURCE_GROUP }} \
-              --location ${{ vars.ACA_LOCATION }} \
-              --registry-name ${{ vars.ACA_CONTAINER_REGISTRY }} \
-              --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
-              --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }} \
-              --registry-sku Basic \
-              --registry-admin-enabled true \
-              --query "name"
-              
+              --location ${{ vars.ACA_LOCATION }}              
               
   buildImage:
     needs: buildEnvironment
