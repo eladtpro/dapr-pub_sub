@@ -95,7 +95,6 @@ jobs:
               --min-replicas 0 \
               --max-replicas 3 \
               --secrets service-bus-connection-string=${{ secrets.ACA_SERVICE_BUS_CONNECTION_STRING }} \
-              --scale-rule-name order-processor-service-bus-queue-length \
               --scale-rule-type azure-servicebus \
               --scale-rule-metadata 
                 "queueName=orders" \
@@ -104,7 +103,9 @@ jobs:
               --scale-rule-auth connection=service-bus-connection-string \
               --enable-dapr \
               --dapr-app-id checkout \
-              --dapr-app-protocol grpc \
+              --dapr-app-protocol grpc 
+
+  # --scale-rule-name order-processor-service-bus-queue-length \
 
   deployContainerApps:
     needs: createScaleableContainerApps
