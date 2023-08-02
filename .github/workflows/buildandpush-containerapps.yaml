@@ -74,7 +74,15 @@ jobs:
           uses: azure/login@v1
           with:
             creds: ${{ secrets.ACA_AZURE_CREDENTIALS }}
+            
+        - name: Check if checkout container app exists
+          id: check_checkout_container_app
+          run: |
+            az containerapp show --name checkout --resource-group ${{ vars.ACA_RESOURCE_GROUP }}
+            echo "::set-output name=exists::true"
+          continue-on-error: true
         - name: Create checkout container app
+          if: steps.check_checkout_container_app.outputs.exists != 'true'
           run: |
             az containerapp create \
               --name checkout \
@@ -86,7 +94,14 @@ jobs:
               --dapr-app-id checkout \
               --dapr-app-protocol grpc 
 
+        - name: Check if checkout container app exists
+          id: check_order-processor_container_app
+          run: |
+            az containerapp show --name order-processor --resource-group ${{ vars.ACA_RESOURCE_GROUP }}
+            echo "::set-output name=exists::true"
+          continue-on-error: true
         - name: Create order-processor container app
+          if: steps.check_order-processor_container_app.outputs.exists != 'true'
           run: |
             az containerapp create \
               --name order-processor \
