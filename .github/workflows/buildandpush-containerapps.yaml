@@ -84,7 +84,7 @@ jobs:
               --max-replicas 3 \
               --enable-dapr \
               --dapr-app-id checkout \
-              --dapr-app-protocol grpc \
+              --dapr-app-protocol grpc 
 
         - name: Create order-processor container app
           run: |
@@ -104,7 +104,7 @@ jobs:
               --scale-rule-auth connection=service-bus-connection-string \
               --enable-dapr \
               --dapr-app-id checkout \
-              --dapr-app-protocol grpc \
+              --dapr-app-protocol grpc
 
   deployContainerApps:
     needs: createScaleableContainerApps
