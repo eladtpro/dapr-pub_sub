@@ -94,17 +94,18 @@ jobs:
               --environment ${{ vars.ACA_CONTAINER_APP_ENVIRONMENT }} \
               --min-replicas 0 \
               --max-replicas 3 \
-              --secrets service-bus-connection-string=${{ secrets.ACA_SERVICE_BUS_CONNECTION_STRING }} \
               --scale-rule-name order-processor-service-bus-queue-length \
               --scale-rule-type azure-servicebus \
               --scale-rule-metadata \
                 "queueName=orders" \
                 "namespace=sb-orderpubsub" \
                 "messageCount=5" \
-              --scale-rule-auth connection=service-bus-connection-string \
               --enable-dapr \
               --dapr-app-id checkout \
-              --dapr-app-protocol grpc
+              --dapr-app-protocol grpc \
+              --secrets service-bus-connection-string=${{ secrets.ACA_SERVICE_BUS_CONNECTION_STRING }} \
+              --scale-rule-auth connection=service-bus-connection-string
+
 
   deployContainerApps:
     needs: createScaleableContainerApps
