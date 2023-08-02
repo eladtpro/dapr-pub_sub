@@ -17,7 +17,7 @@ jobs:
         - name: Check if resource group exists
           id: check_resource_group
           run: |
-            echo exists=$(az group exists --name ${{ env.ACA_RESOURCE_GROUP }})
+            echo exists=$(az group exists --name ${{ vars.ACA_RESOURCE_GROUP }})
         - name: Create resource group
           if: steps.check_resource_group.outputs.exists != 'true'
           run: |
