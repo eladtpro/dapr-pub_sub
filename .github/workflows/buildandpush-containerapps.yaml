@@ -121,9 +121,9 @@ jobs:
               --dapr-app-id order-processor \
               --dapr-app-protocol grpc \
               --secrets service-bus-connection-string=${{ secrets.ACA_SERVICE_BUS_CONNECTION_STRING }} \
-              --scale-rule-auth connection=service-bus-connection-string \
               --target-port 80 \
-              --ingress internal
+              --ingress internal \
+              --scale-rule-auth connection=service-bus-connection-string
 
 
   deployContainerApps:
