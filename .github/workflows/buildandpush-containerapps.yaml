@@ -92,7 +92,8 @@ jobs:
               --max-replicas 3 \
               --enable-dapr \
               --dapr-app-id checkout \
-              --dapr-app-protocol grpc 
+              --dapr-app-protocol grpc \
+              --ingress external
 
         - name: Check if checkout container app exists
           id: check_order-processor_container_app
@@ -116,10 +117,11 @@ jobs:
                 "namespace=sb-orderpubsub" \
                 "messageCount=5" \
               --enable-dapr \
-              --dapr-app-id checkout \
+              --dapr-app-id order-processor \
               --dapr-app-protocol grpc \
               --secrets service-bus-connection-string=${{ secrets.ACA_SERVICE_BUS_CONNECTION_STRING }} \
-              --scale-rule-auth connection=service-bus-connection-string
+              --scale-rule-auth connection=service-bus-connection-string \
+              --ingress internal
 
 
   deployContainerApps:
@@ -143,7 +145,6 @@ jobs:
               --environment ${{vars.ACA_CONTAINER_APP_ENVIRONMENT}} \
               --image ${{ vars.ACA_REGISTRY_LOGIN_SERVER }}/${{ matrix.app }}:latest \
               --target-port 80 \
-              --ingress external \
               --query properties.configuration.ingress.fqdn \
               --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
               --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }} \
