@@ -93,6 +93,7 @@ jobs:
               --enable-dapr \
               --dapr-app-id checkout \
               --dapr-app-protocol grpc \
+              --target-port 80 \
               --ingress external
 
         - name: Check if checkout container app exists
@@ -121,6 +122,7 @@ jobs:
               --dapr-app-protocol grpc \
               --secrets service-bus-connection-string=${{ secrets.ACA_SERVICE_BUS_CONNECTION_STRING }} \
               --scale-rule-auth connection=service-bus-connection-string \
+              --target-port 80 \
               --ingress internal
 
 
@@ -144,7 +146,6 @@ jobs:
               --location ${{ vars.ACA_LOCATION }} \
               --environment ${{vars.ACA_CONTAINER_APP_ENVIRONMENT}} \
               --image ${{ vars.ACA_REGISTRY_LOGIN_SERVER }}/${{ matrix.app }}:latest \
-              --target-port 80 \
               --query properties.configuration.ingress.fqdn \
               --registry-username ${{ secrets.ACA_REGISTRY_USERNAME }} \
               --registry-password ${{ secrets.ACA_REGISTRY_PASSWORD }} \
