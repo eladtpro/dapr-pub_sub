@@ -50,4 +50,4 @@ keda:
   name-of-hpa-resource: "keda-hpa-order-processor"
 
 serviceBus:
-  connectionString: "Endpoint=sb://sbus-dapr-demo.servicebus.windows.net/;SharedAccessKeyName=DaprAccessKey;SharedAccessKey=q4TCvvXD2SRX8dsVvumQHuGcq5btTID6W64s9jQhGlI="
+  connectionString: "<connection_string>"
